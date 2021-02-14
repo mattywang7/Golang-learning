@@ -175,3 +175,7 @@ The full array will be kept in memory until it is no longer referenced.
 Occasionally this can cause the program to hold all the data in memory when only a small piece of it is needed.
 Since the slice references the original array, as long as the slice is kept around the garbage collector can't release the array.
 To fix this problem, one can copy the interesting data to a new slice before returning it.
+
+## Range
+
+When ranging over a slice, two values are returned for each iteration. The first is the index, and the second is a copy of the element at that index.
