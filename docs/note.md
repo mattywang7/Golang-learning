@@ -157,4 +157,15 @@ Therefore, modifying the elements (not the slice itself) of a re-slice modifies 
 
 A slice cannot be grown beyond its capacity. Attempting to do so will cause a runtime panic, just as when indexing outside the bounds of a lice or array.
 
-To increase the capacity of a slice one must create a new, larget slice and copy the contents of the original slice into it.
+To increase the capacity of a slice one must create a new, larger slice and copy the contents of the original slice into it.
+
+Go provides a built-in `append` function that's good for most purposes.
+```
+func append(s []T, x ...T) []T
+```
+The `append` function appends the elements `x` to the end of the slice `s`, and grows the slice if a greater capacity is needed.
+```
+a := []string{"John", "Paul"}
+b := []string{"George", "Ringo", "Pete"}
+a = append(a, b...)  // equivalent to "append(a, b[0], b[1], b[2])"
+```
