@@ -86,6 +86,19 @@ The type `[n]T` is an array of `n` values of type `T`.
 
 An array's length is part of its type, so arrays cannot be resized.
 
+Go's arrays are values. An array variable denotes the entire array; it is not a pointer to the first array element (as would be the case in C).
+This means that when you assign or pass around an array value you will make a copy of its contents.
+One way to think about `array` is as a sort of struct but with indexed rather than named fields: a fixed-size composite value.
+
+An array literal can be specified like so:
+```
+b := [2]string{"Penn", "Teller"}
+```
+or let the compiler to count the array elements
+```
+b := [...]string{"Penn", "Teller"}
+```
+
 ```
 var a [2]string
 a[0] = "Hello"
@@ -120,3 +133,28 @@ The `make` function allocates a zeroed array and returns a slice that refers to 
 a := make([]int, 5)     // len(a) == 5
 ```
 To specify a capacity, pass a third argument to `make`.
+```
+func make([]T, len, cap) []T
+```
+When called, `make` allocates an array and returns a slice that refers to that array.
+
+### Slice internals
+
+A slice is a descriptor of an array segment. It consists of a pointer to the array, the length of the segment, and its capacity (the maximum length of the segment).
+
+![slice-structure](./images/slice-structure.jpeg)
+
+The length is the number of elements referred to by the slice. The capacity is the number of elements in the underlying array (beginning at the element referred to by the slice pointer).
+```
+s = s[2:4]
+```
+
+![length-capacity](./images/length-capacity.jpeg)
+
+Slicing does not copy the slice's data. It creates a new slice value that points to the original array.
+This makes slice operations as efficient as manipulating array indices. 
+Therefore, modifying the elements (not the slice itself) of a re-slice modifies the elements of the original slice.
+
+A slice cannot be grown beyond its capacity. Attempting to do so will cause a runtime panic, just as when indexing outside the bounds of a lice or array.
+
+To increase the capacity of a slice one must create a new, larget slice and copy the contents of the original slice into it.
