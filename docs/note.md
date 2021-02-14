@@ -169,3 +169,9 @@ a := []string{"John", "Paul"}
 b := []string{"George", "Ringo", "Pete"}
 a = append(a, b...)  // equivalent to "append(a, b[0], b[1], b[2])"
 ```
+
+Re-slicing a slice doesn't make a copy of the underlying array. 
+The full array will be kept in memory until it is no longer referenced.
+Occasionally this can cause the program to hold all the data in memory when only a small piece of it is needed.
+Since the slice references the original array, as long as the slice is kept around the garbage collector can't release the array.
+To fix this problem, one can copy the interesting data to a new slice before returning it.
