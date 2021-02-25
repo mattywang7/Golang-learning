@@ -1,20 +1,18 @@
 package main
 
-import (
-	"fmt"
-	"math"
-)
+import "fmt"
 
-func compute(fn func(float64, float64) float64) float64 {
-	return fn(3, 4)
+func getSequence() func() int {
+	i := 0
+	return func() int {
+		i += 1
+		return i
+	}
 }
 
 func main() {
-	hypot := func (x, y float64) float64 {
-		return math.Sqrt(x * x + y * y)
-	}
-	fmt.Println(hypot(5, 12))
-	fmt.Println(compute(hypot))
-	fmt.Println(compute(math.Pow))
+	nextNumber := getSequence()
+	fmt.Println(nextNumber())
+	fmt.Println(nextNumber())
 }
 
