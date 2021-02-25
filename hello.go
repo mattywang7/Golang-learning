@@ -1,20 +1,20 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
+
+func compute(fn func(float64, float64) float64) float64 {
+	return fn(3, 4)
+}
 
 func main() {
-	m := make(map[string]int)
-
-	m["Answer"] = 42
-	fmt.Println("The value is: ", m["Answer"])
-
-	m["Answer"] = 48
-	fmt.Println("The value now is: ", m["Answer"])
-
-	delete(m, "Answer")
-	fmt.Println("The value after deleting is: ", m["Answer"])
-
-	v, ok := m["Answer"]
-	fmt.Println("The value: ", v, "Present?", ok)
+	hypot := func (x, y float64) float64 {
+		return math.Sqrt(x * x + y * y)
+	}
+	fmt.Println(hypot(5, 12))
+	fmt.Println(compute(hypot))
+	fmt.Println(compute(math.Pow))
 }
 

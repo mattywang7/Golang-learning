@@ -211,3 +211,14 @@ elem, ok = m[key]
 ```
 If `key` is in `m`, `ok` is `true`. If not, `ok` is `false`.
 If `key` is not in the map, then `elem` is zero for the map's element type.
+
+## Function values
+
+Functions are values too. They can be passed around just like other values.
+Function values may be used as function arguments and return types.
+
+## Function closures
+
+Go functions may be closures. A closure is a function value that references variables from outside its body.
+The function may access and assign to the referenced variables; in this sense the function is "bound" to the variables.
+
