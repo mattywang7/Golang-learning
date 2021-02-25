@@ -111,7 +111,7 @@ primes := [6]int{2, 3, 5, 7, 11, 13}
 An array has a fixed size. A slice, on the other hand, is a dynamically-sized, flexible view into the elements of an array.
 In practice, slices are much more common than arrays.
 
-The type `[]T` is a lice with elements of type `T`.
+The type `[]T` is a slice with elements of type `T`.
 
 A slice is formed by specifying two indices, a low and high bound, separated by a colon:
 ```
@@ -179,3 +179,35 @@ To fix this problem, one can copy the interesting data to a new slice before ret
 ## Range
 
 When ranging over a slice, two values are returned for each iteration. The first is the index, and the second is a copy of the element at that index.
+
+## Maps
+
+A map maps keys to values.
+The zero value of a map is `nil`. A `nil` map has no keys, nor can keys be added.
+The `make` function returns a map of the given type, initialized and ready for use.
+```
+type Vertex struct {
+    Lat, Long float64
+}
+
+var m = make(map[string]Vertex)
+```
+
+Insert or update an element in map m:
+```
+m[key] = elem
+```
+Retrieve an element:
+```
+elem = m[key]
+```
+Delete an element:
+```
+delete(m, key)
+```
+Test that a key is present with a two-value assignment:
+```
+elem, ok = m[key]
+```
+If `key` is in `m`, `ok` is `true`. If not, `ok` is `false`.
+If `key` is not in the map, then `elem` is zero for the map's element type.
