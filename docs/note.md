@@ -283,3 +283,131 @@ In general, all methods on a given type should have either value or pointer rece
 
 An *interface type* is defined as a set of method signatures.
 A value of interface type can hold any value that implements those methods.
+
+A type implements an interface by implementing its methods.
+There is no explicit declaration of intent, no "implements" keyword.
+Implicit interfaces decouple the definition of an interface from its implementation,
+which could then appear in any package without prearrangement.
+```go
+package main
+
+import "fmt"
+
+type I interface {
+	M()
+}
+
+type T struct {
+	S string
+}
+
+// This method means type T implements the interface I,
+// but we don't need to explicitly declare that it does so.
+func (t T) M() {
+	fmt.Println(t.S)
+}
+
+func main() {
+	var i I = T{"Hello"}
+	i.M()
+}
+```
+
+Under the hood, interface values can be thought of as a tuple of a value and a concrete type:
+```
+(value, type)
+```
+An interface value holds a value of a specific underlying concrete type.
+Calling a method on an interface value executes the method of the same name on its underlying type.
+
+If the concrete value inside the interface itself is `nil`, the method will be called with a `nil` receiver.
+In some languages this would trigger a null pointer exception, but in Go it is common to write methods to gracefully handle being called with a nil receiver.
+Note that an interface value that holds a nil concrete value is itself non-nil.
+
+A nil interface value holds neither value nor concrete type.
+Calling a method on a nil interface value is a run-time error because there is no type inside the interface tuple to indicate which concrete method to call.
+
+The interface type that specifies zero methods is known as the *empty interface*.
+```
+interface{}
+```
+An empty interface may hold values of any type. (Every type implements at least zero methods.)
+Empty interfaces are used by code that handles values of unknown type.
+For example, `fmt.Print` takes any number of arguments of type `interface{}`.
+
+## Type assertions
+
+A type assertions provides access to an interface value's underlying concrete value.
+```
+t := i.(T)
+```
+This statement asserts that the interface value `i` holds the concrete type `T`.
+If it does not hold a `T`, the statement will trigger a panic.
+
+To test whether an interface value holds a specific type, a type assertion can return two values: 
+the underlying value and a boolean value that reports whether the assertion succeeded.
+```
+t, ok := i.(T)
+```
+If `i` holds a `T`, then `t` will be the underlying value and `ok` will be true.
+If not, `ok` will be false and `t` will be the zero value of type `T`, and no panic occurs.
+
+## Type switches
+
+A *type switch* is a construct that permits several type assertions in series.
+```go
+package main
+
+import "fmt"
+
+func do(i interface{}) {
+	switch v := i.(type) {
+	case int:
+		fmt.Printf("Twice %v is %v\n", v, v * 2)
+	case string:
+		fmt.Printf("%q is %v bytes long\n", v, len(v))
+	default:
+		fmt.Printf("I don't know about type %T\n", v)
+	}
+}
+
+func main() {
+	do(21)
+	do("hello")
+	do(true)
+}
+```
+The declaration in a type switch has the same syntax as a type assertion `i.(T)`, but the specific type `T` is replaced with the keyword `type`.
+In each of the `T` and `S` cases, the variable `v` will be of type `T` or `S` respectively and hold the value held by `i`.
+In the default case (where there is no match), the variable `v` is of the same interface type and value as `i`.
+
+## Stringers
+
+One of the most ubiquitous interfaces is `Stringer` defined by the `fmt` package.
+```
+type Stringer interface {
+    String() string
+}
+```
+
+```go
+package main
+
+import "fmt"
+
+type Person struct {
+	Name string
+	Age int
+}
+
+func (p Person) String() string {
+	return fmt.Sprintf("%v (%v years)", p.Name, p.Age)
+}
+
+func main() {
+	a := Person{"Arthur Dent", 42}
+	z := Person{"Zaphod Beeblebrox", 9001}
+	fmt.Println(a, z)
+}
+```
+
