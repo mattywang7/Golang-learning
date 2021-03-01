@@ -411,3 +411,18 @@ func main() {
 }
 ```
 
+## Errors
+
+Go programs express error state with `error` values.
+The `error` type is a built-in interface like `fmt.Stringer`.
+```
+type error interface {
+    Error() string
+}
+```
+
+Functions often return an `error` value, and calling code should handle errors by testing whether the error equals to `nil`.
+A nil `error` denotes success; a non-nil `error` denotes failure.
+
+A call to `fmt.Sprint(e)` inside the `Error()` method will send the program into an infinite loop.
+You can avoid this by converting `e` first: `fmt.Sprint(float64(e))`.
