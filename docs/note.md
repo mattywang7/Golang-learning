@@ -426,3 +426,9 @@ A nil `error` denotes success; a non-nil `error` denotes failure.
 
 A call to `fmt.Sprint(e)` inside the `Error()` method will send the program into an infinite loop.
 You can avoid this by converting `e` first: `fmt.Sprint(float64(e))`.
+
+## Readers
+
+The `io` package specifies the `io.Reader` interface, which represents the read end of a stream of data.
+`Read` populates the given byte slice with data and return the number of bytes populated and an error value.
+It returns an `io.EOF` error when the stream ends.
