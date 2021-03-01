@@ -222,3 +222,64 @@ Function values may be used as function arguments and return types.
 Go functions may be closures. A closure is a function value that references variables from outside its body.
 The function may access and assign to the referenced variables; in this sense the function is "bound" to the variables.
 
+## Methods
+
+Go does not have classes. However, you can define methods on types.
+A method is a function with a special receiver argument.
+The receiver appears in its own argument list between the `func` keyword and the method name.
+
+A method is just a function with a receiver with argument.
+
+You can only declare a method with a receiver whose type is defined in the same package as the method.
+You cannot declare a method with a receiver whose type is defined in another package.
+```go
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+type MyFloat float64
+
+func (f MyFloat) Abs() float64 {
+	if f < 0 {
+		return float64(-f)
+	}
+	return float64(f)
+}
+
+func main() {
+	f := MyFloat(-math.Sqrt2)
+	fmt.Println(f.Abs())
+}
+```
+
+## Pointer receivers
+
+You can declare methods with pointer receivers.
+This means the receiver type has the literal syntax `*T` for some type `T`. 
+(Also, `T` cannot itself be a pointer such `*int`.)
+
+Methods with pointer receivers can modify the value to which the receiver points.
+Since methods often need ot modify their receiver, pointer receivers are more common than value receivers.
+
+With a value receiver, the method operates on a copy of the original value.
+(This is the same behavior as for any other function argument.)
+
+Functions with a pointer argument must take a pointer, while methods with pointer receivers take either a value or a pointer as the receiver when they are called.
+As a convenience, Go interprets the statement `v.Scale(5)` as `(&v).Scale(5)` sine the `Scale` method has a pointer receiver.
+The equivalent thing happens in the reverse direction. Functions that take a value argument must take a value of that specific type,
+while methods with value receivers take either a value or a pointer as the receiver when they are called.
+The method call `p.Abs()` is interpreted as `(*p).Abs()`.
+
+There are two reasons to use a pointer receiver:
+- The method can modify the value that its receiver points to.
+- To avoid copying the value on each method call. This can be more efficient if the receiver is a large struct.
+
+In general, all methods on a given type should have either value or pointer receivers, but not a mixture of both.
+
+## Interfaces
+
+An *interface type* is defined as a set of method signatures.
+A value of interface type can hold any value that implements those methods.
