@@ -432,3 +432,18 @@ You can avoid this by converting `e` first: `fmt.Sprint(float64(e))`.
 The `io` package specifies the `io.Reader` interface, which represents the read end of a stream of data.
 `Read` populates the given byte slice with data and return the number of bytes populated and an error value.
 It returns an `io.EOF` error when the stream ends.
+
+## Goroutines
+
+A *goroutine* is a lightweight thread managed by the Go runtime.
+```
+go f(x, y, z)
+```
+starts a new goroutine running
+```
+f(x, y, z)
+```
+The evaluation of `f`, `x`, `y`, and `z` happens in the current goroutine and the execution of `f` happens in the new goroutine.
+
+Goroutines run in the same address space, so access to shared memory must be synchronized.
+The `sync` package provides useful primitives, although you will not use them much in Go as there are other primitives.
